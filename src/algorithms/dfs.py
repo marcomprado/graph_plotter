@@ -8,11 +8,12 @@ class DFSAlgorithm(BaseAlgorithm):
     # Implementação do algoritmo de Busca em Profundidade (DFS)
 
     def traverse(self, graph: nx.Graph, start_node) -> Generator[GraphState, None, None]:
-        
+
         if start_node not in graph.nodes():
             raise ValueError(f"Nó inicial '{start_node}' não encontrado no grafo")
 
-        visited = set()
+        visited_set = set()  # Para verificação O(1)
+        visited_order = []   # Para manter ordem cronológica
         stack = [start_node]
         visited_edges = []  # Rastrear arestas visitadas
         parent = {start_node: None}  # Rastrear pai de cada nó
@@ -20,8 +21,9 @@ class DFSAlgorithm(BaseAlgorithm):
         while stack:
             current = stack.pop()
 
-            if current not in visited:
-                visited.add(current)
+            if current not in visited_set:
+                visited_set.add(current)
+                visited_order.append(current)  # Adicionar na lista (ordem garantida)
 
                 # Obter nó anterior
                 previous = parent[current]
@@ -34,7 +36,7 @@ class DFSAlgorithm(BaseAlgorithm):
 
                 # Produzir estado com informações da aresta
                 yield GraphState(
-                    visited=list(visited),
+                    visited=list(visited_order),  # Usar lista ordenada
                     current=current,
                     queue_or_stack=list(stack),
                     graph=graph,
@@ -45,6 +47,6 @@ class DFSAlgorithm(BaseAlgorithm):
                 # Adicionar vizinhos não visitados à pilha (em ordem reversa para travessia consistente)
                 neighbors = list(graph.neighbors(current))
                 for neighbor in reversed(neighbors):
-                    if neighbor not in visited and neighbor not in stack:
+                    if neighbor not in visited_set and neighbor not in stack:
                         stack.append(neighbor)
                         parent[neighbor] = current  # Rastrear pai

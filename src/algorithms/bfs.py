@@ -13,7 +13,8 @@ class BFSAlgorithm(BaseAlgorithm):
         if start_node not in graph.nodes():
             raise ValueError(f"Nó inicial '{start_node}' não encontrado no grafo")
 
-        visited = set()
+        visited_set = set()  # Para verificação O(1)
+        visited_order = []   # Para manter ordem cronológica
         queue = deque([start_node])
         visited_edges = []  # Rastrear arestas visitadas
         parent = {start_node: None}  # Rastrear pai de cada nó
@@ -21,8 +22,9 @@ class BFSAlgorithm(BaseAlgorithm):
         while queue:
             current = queue.popleft()
 
-            if current not in visited:
-                visited.add(current)
+            if current not in visited_set:
+                visited_set.add(current)
+                visited_order.append(current)  # Adicionar na lista (ordem garantida)
 
                 # Obter nó anterior
                 previous = parent[current]
@@ -35,7 +37,7 @@ class BFSAlgorithm(BaseAlgorithm):
 
                 # Produzir estado com informações da aresta
                 yield GraphState(
-                    visited=list(visited),
+                    visited=list(visited_order),  # Usar lista ordenada
                     current=current,
                     queue_or_stack=list(queue),
                     graph=graph,
@@ -45,6 +47,6 @@ class BFSAlgorithm(BaseAlgorithm):
 
                 # Adicionar vizinhos não visitados à fila
                 for neighbor in graph.neighbors(current):
-                    if neighbor not in visited and neighbor not in queue:
+                    if neighbor not in visited_set and neighbor not in queue:
                         queue.append(neighbor)
                         parent[neighbor] = current  # Rastrear pai

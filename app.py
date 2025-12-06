@@ -245,6 +245,67 @@ def main():
                 # Mostrar ordem de travessia
                 st.write("**Ordem de Travessia:**", " → ".join(map(str, state.visited)))
 
+                # ====== ESTATÍSTICAS RESUMIDAS ======
+                st.divider()
+                st.subheader("📊 Estatísticas da Travessia")
+
+                # Métricas em colunas
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    st.metric(
+                        "Nós Visitados",
+                        f"{len(state.visited)}/{total_nodes}",
+                        f"{len(state.visited)/total_nodes*100:.1f}%"
+                    )
+
+                with col2:
+                    edges_count = len(state.visited_edges) if state.visited_edges else 0
+                    st.metric("Arestas Percorridas", edges_count)
+
+                with col3:
+                    unvisited_count = total_nodes - len(state.visited)
+                    if unvisited_count > 0:
+                        st.metric("Nós Não Alcançados", unvisited_count, delta_color="inverse")
+                    else:
+                        st.metric("Cobertura", "100%", delta_color="normal")
+
+                # ====== CUSTO TOTAL (para Dijkstra e MST) ======
+                if st.session_state.algorithm_type in ["Dijkstra", "MST (Prim)"]:
+                    st.divider()
+
+                    if state.visited_edges:
+                        total_cost = sum(
+                            graph[edge[0]][edge[1]].get('weight', 1.0)
+                            for edge in state.visited_edges
+                        )
+
+                        if st.session_state.algorithm_type == "Dijkstra":
+                            st.info(f"🎯 **Custo Total do Caminho:** {total_cost:.2f}")
+                            st.caption("Soma dos pesos das arestas no caminho de exploração de Dijkstra")
+
+                        elif st.session_state.algorithm_type == "MST (Prim)":
+                            st.success(f"🌳 **Peso Total da MST:** {total_cost:.2f}")
+                            st.caption("Soma dos pesos das arestas na Árvore Geradora Mínima")
+
+                        # Detalhes das arestas (expansível)
+                        with st.expander("Ver Detalhes das Arestas"):
+                            st.write("**Arestas Percorridas:**")
+                            for i, edge in enumerate(state.visited_edges, 1):
+                                weight = graph[edge[0]][edge[1]].get('weight', 1.0)
+                                st.write(f"{i}. `{edge[0]}` ↔ `{edge[1]}` (peso: **{weight:.2f}**)")
+
+                # ====== ALERTA PARA GRAFOS DESCONECTADOS ======
+                unvisited_nodes = set(graph.nodes()) - set(state.visited)
+                if unvisited_nodes:
+                    st.divider()
+                    st.warning(
+                        f"⚠️ **Grafo Desconectado!** "
+                        f"Nós não alcançáveis a partir de `{start_node}`: "
+                        f"{', '.join(map(str, sorted(unvisited_nodes)))}"
+                    )
+                    st.caption("Estes nós não possuem caminho conectado ao nó inicial escolhido.")
+
 
 if __name__ == "__main__":
     main()

@@ -9,7 +9,7 @@ class DijkstraAlgorithm(BaseAlgorithm):
     # Implementação do algoritmo de Dijkstra para caminho mínimo
 
     def traverse(self, graph: nx.Graph, start_node) -> Generator[GraphState, None, None]:
-       
+
         if start_node not in graph.nodes():
             raise ValueError(f"Nó inicial '{start_node}' não encontrado no grafo")
 
@@ -17,7 +17,9 @@ class DijkstraAlgorithm(BaseAlgorithm):
         distances = {node: float('inf') for node in graph.nodes()}
         distances[start_node] = 0
         previous = {start_node: None}
-        visited = set()
+
+        visited_set = set()  # Para verificação O(1)
+        visited_order = []   # Para manter ordem cronológica
         visited_edges = []
 
         # Fila de prioridade: (distância, nó)
@@ -27,10 +29,11 @@ class DijkstraAlgorithm(BaseAlgorithm):
             current_dist, current = heapq.heappop(pq)
 
             # Pular se já visitado
-            if current in visited:
+            if current in visited_set:
                 continue
 
-            visited.add(current)
+            visited_set.add(current)
+            visited_order.append(current)  # Adicionar na lista (ordem garantida)
 
             # Adicionar aresta visitada
             if previous.get(current) is not None:
@@ -43,7 +46,7 @@ class DijkstraAlgorithm(BaseAlgorithm):
 
             # Yield estado atual
             yield GraphState(
-                visited=list(visited),
+                visited=list(visited_order),  # Usar lista ordenada
                 current=current,
                 queue_or_stack=queue_display,
                 graph=graph,
@@ -53,7 +56,7 @@ class DijkstraAlgorithm(BaseAlgorithm):
 
             # Relaxar arestas dos vizinhos
             for neighbor in graph.neighbors(current):
-                if neighbor not in visited:
+                if neighbor not in visited_set:
                     # Obter peso da aresta
                     weight = graph[current][neighbor].get('weight', 1.0)
                     new_dist = current_dist + weight
