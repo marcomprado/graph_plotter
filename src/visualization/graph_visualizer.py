@@ -89,7 +89,7 @@ class GraphVisualizer:
             ax=ax
         )
 
-        # Desenhar rótulos
+        # Desenhar rótulos de nós
         nx.draw_networkx_labels(
             graph,
             self.layout,
@@ -97,6 +97,29 @@ class GraphVisualizer:
             font_weight='bold',
             ax=ax
         )
+
+        # Desenhar labels de peso nas arestas
+        edge_labels = nx.get_edge_attributes(graph, 'weight')
+        if edge_labels:
+            # Formatar pesos: 2 casas decimais, ocultar peso=1
+            edge_labels_formatted = {
+                edge: f"{weight:.2f}" if weight != 1.0 else ""
+                for edge, weight in edge_labels.items()
+            }
+            # Remover labels vazios (peso = 1)
+            edge_labels_formatted = {k: v for k, v in edge_labels_formatted.items() if v}
+
+            # Desenhar labels nas arestas
+            if edge_labels_formatted:
+                nx.draw_networkx_edge_labels(
+                    graph,
+                    self.layout,
+                    edge_labels=edge_labels_formatted,
+                    font_size=9,
+                    font_color='red',
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="red", alpha=0.8),
+                    ax=ax
+                )
 
         # Atualizar título para mostrar aresta atual
         if state.previous is not None:

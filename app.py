@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
+import networkx as nx
 from src.parsers import ParserFactory
 from src.algorithms import AlgorithmFactory
 from src.visualization.graph_visualizer import GraphVisualizer
@@ -44,7 +45,7 @@ def main():
         # Passo 3: Seleção de algoritmo
         algorithm_type = st.selectbox(
             "Algoritmo",
-            ["BFS", "DFS"],
+            ["BFS", "DFS", "Dijkstra", "MST (Prim)"],
             help="Escolha o algoritmo de travessia para visualizar"
         )
 
@@ -90,7 +91,7 @@ def main():
 
         ### Exemplos de Formato CSV
 
-        **Lista de Arestas:**
+        **Lista de Arestas (sem pesos):**
         ```
         origem,destino
         A,B
@@ -98,7 +99,15 @@ def main():
         C,D
         ```
 
-        **Matriz de Adjacência:**
+        **Lista de Arestas (com pesos):**
+        ```
+        origem,destino,peso
+        A,B,2.5
+        B,C,1.0
+        C,D,3.7
+        ```
+
+        **Matriz de Adjacência (sem pesos):**
         ```
         ,A,B,C,D
         A,0,1,0,1
@@ -107,13 +116,30 @@ def main():
         D,1,0,1,0
         ```
 
-        **Lista de Adjacência:**
+        **Matriz de Adjacência (com pesos):**
+        ```
+        ,A,B,C
+        A,0,2.5,0
+        B,2.5,0,1.0
+        C,0,1.0,0
+        ```
+
+        **Lista de Adjacência (sem pesos):**
         ```
         nó,vizinho1,vizinho2
         A,B,D
         B,A,C
         C,B,D
         D,A,C
+        ```
+
+        **Lista de Adjacência (com pesos):**
+        ```
+        nó,vizinho1,peso1,vizinho2,peso2
+        A,B,2.5,D,1.0
+        B,A,2.5,C,3.0
+        C,B,3.0,D,1.5
+        D,A,1.0,C,1.5
         ```
         """)
 
@@ -143,6 +169,16 @@ def main():
                 st.session_state.graph_loaded = True
 
                 st.success(f"Grafo carregado: {len(graph.nodes())} nós, {len(graph.edges())} arestas")
+
+                # Verificar se grafo é ponderado
+                edge_weights = nx.get_edge_attributes(graph, 'weight')
+                if edge_weights:
+                    weights = list(edge_weights.values())
+                    all_ones = all(w == 1.0 for w in weights)
+                    if not all_ones:
+                        st.info(f"Grafo PONDERADO detectado. Pesos: {min(weights):.2f} a {max(weights):.2f}")
+                    else:
+                        st.info("Grafo NÃO ponderado (todos os pesos = 1)")
 
             except ValueError as e:
                 st.error(f"Erro ao processar CSV: {str(e)}")

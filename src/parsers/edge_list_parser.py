@@ -19,7 +19,7 @@ class EdgeListParser(BaseParser):
         Formato esperado:
         - Coluna 0: nó de origem
         - Coluna 1: nó de destino
-        - Colunas adicionais são ignoradas
+        - Coluna 2 (OPCIONAL): peso da aresta (default=1.0)
         """
         self.validate(df)
 
@@ -29,13 +29,27 @@ class EdgeListParser(BaseParser):
         source_col = df.columns[0]
         target_col = df.columns[1]
 
+        # Verificar se existe coluna de peso (3ª coluna)
+        has_weight = len(df.columns) >= 3
+        weight_col = df.columns[2] if has_weight else None
+
         for _, row in df.iterrows():
             source = row[source_col]
             target = row[target_col]
 
             # Pular linhas com valores ausentes
             if pd.notna(source) and pd.notna(target):
-                G.add_edge(source, target)
+                # Extrair peso se existir
+                if has_weight:
+                    weight = row[weight_col]
+                    try:
+                        weight = float(weight) if pd.notna(weight) else 1.0
+                    except (ValueError, TypeError):
+                        weight = 1.0
+                else:
+                    weight = 1.0
+
+                G.add_edge(source, target, weight=weight)
 
         if len(G.nodes()) == 0:
             raise ValueError("Nenhuma aresta válida encontrada no arquivo CSV")

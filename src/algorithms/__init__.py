@@ -1,5 +1,7 @@
 from .bfs import BFSAlgorithm
 from .dfs import DFSAlgorithm
+from .dijkstra import DijkstraAlgorithm
+from .mst_prim import PrimMSTAlgorithm
 
 
 class AlgorithmFactory:
@@ -11,7 +13,7 @@ class AlgorithmFactory:
         Criar algoritmo baseado no tipo
 
         Args:
-            algo_type: Tipo de algoritmo ("BFS", "DFS")
+            algo_type: Tipo de algoritmo ("BFS", "DFS", "Dijkstra", "MST (Prim)")
 
         Returns:
             Instância de algoritmo para o tipo especificado
@@ -21,11 +23,13 @@ class AlgorithmFactory:
         """
         algorithms = {
             "BFS": BFSAlgorithm(),
-            "DFS": DFSAlgorithm()
+            "DFS": DFSAlgorithm(),
+            "Dijkstra": DijkstraAlgorithm(),
+            "MST (Prim)": PrimMSTAlgorithm()
         }
         if algo_type not in algorithms:
             raise ValueError(f"Algoritmo desconhecido: {algo_type}")
         return algorithms[algo_type]
 
 
-__all__ = ['AlgorithmFactory', 'BFSAlgorithm', 'DFSAlgorithm']
+__all__ = ['AlgorithmFactory', 'BFSAlgorithm', 'DFSAlgorithm', 'DijkstraAlgorithm', 'PrimMSTAlgorithm']

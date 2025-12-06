@@ -5,19 +5,10 @@ from src.models.graph_state import GraphState
 
 
 class DFSAlgorithm(BaseAlgorithm):
-    """Implementação do algoritmo de Busca em Profundidade (DFS)"""
+    # Implementação do algoritmo de Busca em Profundidade (DFS)
 
     def traverse(self, graph: nx.Graph, start_node) -> Generator[GraphState, None, None]:
-        """
-        Executar travessia DFS e produzir estado a cada passo
-
-        Args:
-            graph: Grafo NetworkX para percorrer
-            start_node: Nó inicial para travessia
-
-        Yields:
-            Objetos GraphState representando cada passo do DFS
-        """
+        
         if start_node not in graph.nodes():
             raise ValueError(f"Nó inicial '{start_node}' não encontrado no grafo")
 

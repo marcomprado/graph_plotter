@@ -28,13 +28,19 @@ class AdjacencyMatrixParser(BaseParser):
         Formato esperado:
         - Primeira linha: cabeçalhos de coluna (rótulos dos nós)
         - Primeira coluna: rótulos de linha (rótulos dos nós) - opcional
-        - Células da matriz: 0 (sem aresta) ou não-zero (aresta existe)
+        - Células da matriz: 0 (sem aresta) ou valor numérico (peso da aresta)
 
         Exemplo:
         ,A,B,C
         A,0,1,0
         B,1,0,1
         C,0,1,0
+
+        Exemplo com pesos:
+        ,A,B,C
+        A,0,2.5,0
+        B,2.5,0,1.0
+        C,0,1.0,0
         """
         self.validate(df)
 
@@ -78,11 +84,11 @@ class AdjacencyMatrixParser(BaseParser):
                         except (ValueError, TypeError):
                             cell_value = 0
 
-                        # Adicionar aresta se não-zero
+                        # Adicionar aresta se não-zero (valor da célula = peso)
                         if cell_value != 0:
                             # Para grafo não direcionado, adicionar aresta apenas uma vez (triângulo superior)
                             if i <= j:
-                                G.add_edge(row_node, col_node)
+                                G.add_edge(row_node, col_node, weight=cell_value)
                 except (IndexError, KeyError):
                     continue
 

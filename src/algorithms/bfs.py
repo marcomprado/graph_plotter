@@ -6,19 +6,10 @@ from src.models.graph_state import GraphState
 
 
 class BFSAlgorithm(BaseAlgorithm):
-    """Implementação do algoritmo de Busca em Largura (BFS)"""
+    # Implementação do algoritmo de Busca em Largura (BFS)
 
     def traverse(self, graph: nx.Graph, start_node) -> Generator[GraphState, None, None]:
-        """
-        Executar travessia BFS e produzir estado a cada passo
 
-        Args:
-            graph: Grafo NetworkX para percorrer
-            start_node: Nó inicial para travessia
-
-        Yields:
-            Objetos GraphState representando cada passo do BFS
-        """
         if start_node not in graph.nodes():
             raise ValueError(f"Nó inicial '{start_node}' não encontrado no grafo")
 
