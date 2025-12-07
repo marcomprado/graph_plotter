@@ -21,7 +21,7 @@ O projeto oferece **4 algoritmos fundamentais** de grafos:
 
 Suporta **3 formatos CSV** diferentes:
 
-- **Lista de Arestas** - `origem,destino,peso` (peso opcional)
+- **Lista de Arestas** - `origem,destino,peso`
 - **Matriz de Adjacência** - Matriz quadrada com valores como pesos
 - **Lista de Adjacência** - `nó,vizinho1,peso1,vizinho2,peso2,...`
 
@@ -31,10 +31,11 @@ Exemplos de arquivos estão disponíveis em `/examples/`.
 
 | Biblioteca | Versão | Propósito |
 |-----------|--------|----------|
-| **Streamlit** | Latest | Interface web interativa |
+| **Streamlit** | 1.29.0 | Interface web interativa |
 | **NetworkX** | 3.2.1 | Manipulação de grafos |
 | **Matplotlib** | 3.8.2 | Visualização gráfica |
 | **Pandas** | 2.1.4 | Processamento de CSV |
+| **Watchdog** | 6.0.0 | Auto-reload durante desenvolvimento |
 
 ### Componentes Principais
 
@@ -48,23 +49,79 @@ src/
 
 ### Como Executar
 
-1. **Instalar dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### 1. Verificar se Python está instalado
 
-2. **Executar aplicação:**
-   ```bash
-   streamlit run app.py
-   ```
+Antes de começar, verifique se você tem Python instalado:
 
-3. **Usar a interface:**
-   - Selecione o formato do grafo
-   - Carregue um arquivo CSV (ou use os exemplos em `/examples/`)
-   - Escolha o algoritmo
-   - Ajuste a velocidade da animação
-   - Clique 2 vezes em "Carregar e Executar"
-   - Selecione o nó inicial e inicie a animação
+```bash
+python --version
+```
+ou
+```bash
+python3 --version (se o sistema for mac ou linux)
+```
+
+Se o comando retornar uma versão (ex: `Python 3.9.0` ou superior), pule para a etapa 3.
+
+#### 2. Instalar Python (se necessário)
+
+**Windows:**
+1. Acesse [python.org/downloads](https://www.python.org/downloads/)
+2. Baixe o instalador mais recente do Python 3
+3. Execute o instalador
+4. **IMPORTANTE:** Marque a opção "Add Python to PATH" durante a instalação
+5. Clique em "Install Now"
+
+**macOS:**
+- **Opção 1 - Site oficial:**
+  1. Acesse [python.org/downloads](https://www.python.org/downloads/)
+  2. Baixe e execute o instalador para macOS
+
+- **Opção 2 - Homebrew (recomendado):**
+  ```bash
+  brew install python
+  ```
+
+**Linux:**
+- **Ubuntu/Debian:**
+  ```bash
+  sudo apt update
+  sudo apt install python3 python3-pip
+  ```
+
+#### 3. Verificar instalação do Python e pip
+
+Após instalar, confirme que Python e pip estão funcionando: (Se `python` não funcionar, tente `python3` e `pip3`.)
+
+```bash
+python --version
+pip --version
+```
+
+#### 4. Instalar dependências do projeto
+
+No diretório do projeto, execute:
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 5. Executar a aplicação
+
+```bash
+streamlit run app.py
+```
+
+O navegador abrirá automaticamente em `http://localhost:8501`.
+
+#### 6. Usar a interface
+
+- Selecione o formato do grafo
+- Carregue um arquivo CSV (ou use os exemplos em `/examples/`)
+- Escolha o algoritmo
+- Ajuste a velocidade da animação
+- Clique 2 vezes em "Carregar e Executar"
+- Selecione o nó inicial e inicie a animação
 
 ---
 
