@@ -4,17 +4,13 @@ from .base_parser import BaseParser
 
 
 class AdjacencyMatrixParser(BaseParser):
-    """Parser para arquivos CSV no formato de matriz de adjacência"""
 
     def validate(self, df: pd.DataFrame) -> None:
-        """Validar estrutura da matriz de adjacência"""
         super().validate(df)
 
-        # Verificar se a matriz é quadrada
         num_rows = len(df)
         num_cols = len(df.columns)
 
-        # A primeira coluna pode ser rótulos de nós, então verificar ambos os casos
         if num_cols != num_rows and num_cols != num_rows + 1:
             raise ValueError(
                 f"Matriz de adjacência deve ser quadrada. Recebido {num_rows} linhas e {num_cols} colunas. "
@@ -22,26 +18,7 @@ class AdjacencyMatrixParser(BaseParser):
             )
 
     def parse(self, df: pd.DataFrame) -> nx.Graph:
-        """
-        Processar CSV de matriz de adjacência em grafo NetworkX
 
-        Formato esperado:
-        - Primeira linha: cabeçalhos de coluna (rótulos dos nós)
-        - Primeira coluna: rótulos de linha (rótulos dos nós) - opcional
-        - Células da matriz: 0 (sem aresta) ou valor numérico (peso da aresta)
-
-        Exemplo:
-        ,A,B,C
-        A,0,1,0
-        B,1,0,1
-        C,0,1,0
-
-        Exemplo com pesos:
-        ,A,B,C
-        A,0,2.5,0
-        B,2.5,0,1.0
-        C,0,1.0,0
-        """
         self.validate(df)
 
         G = nx.Graph()
@@ -84,9 +61,9 @@ class AdjacencyMatrixParser(BaseParser):
                         except (ValueError, TypeError):
                             cell_value = 0
 
-                        # Adicionar aresta se não-zero (valor da célula = peso)
+                        # Adicionar aresta se não-zero
                         if cell_value != 0:
-                            # Para grafo não direcionado, adicionar aresta apenas uma vez (triângulo superior)
+                            # Para grafo não direcionado
                             if i <= j:
                                 G.add_edge(row_node, col_node, weight=cell_value)
                 except (IndexError, KeyError):

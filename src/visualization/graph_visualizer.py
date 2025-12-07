@@ -5,8 +5,6 @@ from src.models.graph_state import GraphState
 
 
 class GraphVisualizer:
-    """Gerencia renderização de grafos baseada em matplotlib com layout fixo"""
-
     def __init__(self):
         self.layout = None  # Cachear layout para consistência
         self.node_colors = {
@@ -21,16 +19,6 @@ class GraphVisualizer:
         }
 
     def render(self, graph: nx.Graph, state: GraphState) -> Figure:
-        """
-        Renderizar grafo com cores de nós e arestas baseadas no estado
-
-        Args:
-            graph: Grafo NetworkX para renderizar
-            state: Estado atual da travessia
-
-        Returns:
-            Objeto figura do Matplotlib
-        """
         # Calcular layout uma vez e cachear
         if self.layout is None:
             self.layout = nx.spring_layout(graph, seed=42)
