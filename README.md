@@ -56,9 +56,9 @@ Antes de começar, verifique se você tem Python instalado:
 ```bash
 python --version
 ```
-ou
+ou (se o sistema for mac ou linux)
 ```bash
-python3 --version (se o sistema for mac ou linux)
+python3 --version 
 ```
 
 Se o comando retornar uma versão (ex: `Python 3.9.0` ou superior), pule para a etapa 3.
